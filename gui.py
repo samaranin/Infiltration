@@ -31,6 +31,7 @@ class MainWindow(QMainWindow):
         self.c_max_edit = QLineEdit('200')
         self.t_min_edit = QLineEdit('0')
         self.t_max_edit = QLineEdit('100')
+        self.step = QLineEdit('50')
 
         #add table widget
         self.tableResult = QTableWidget()
@@ -60,6 +61,9 @@ class MainWindow(QMainWindow):
             
         gridNet.addWidget(QLabel('T Max = '), 2, 2)
         gridNet.addWidget(self.t_max_edit, 2, 3) 
+
+        gridNet.addWidget(QLabel('Discretization Step = '), 3, 0)
+        gridNet.addWidget(self.step,3, 1) 
 
         #join both layouts in one vertical
         vbox = QVBoxLayout()
@@ -99,9 +103,10 @@ class MainWindow(QMainWindow):
         a_ij = inf.calculate_aj()
         self.show_aij(a_ij)
 
-        c = np.linspace(float(self.c_min_edit.text()), float(self.c_max_edit.text()), 50)
-        t = np.linspace(float(self.t_min_edit.text()), float(self.t_max_edit.text()), 50)
-        tk = np.zeros((50, 50), dtype=float)
+        step = int(self.step.text())
+        c = np.linspace(float(self.c_min_edit.text()), float(self.c_max_edit.text()), step)
+        t = np.linspace(float(self.t_min_edit.text()), float(self.t_max_edit.text()), step)
+        tk = np.zeros((step, step), dtype=float)
 
         f = open("approximation.txt", "w")
         i = 0
@@ -109,7 +114,7 @@ class MainWindow(QMainWindow):
             j = 0
             for t_val in t:
                 tk[i, j] = inf.tk_ct(a_ij, c_val, t_val)
-                f.write("tk(c = "+ str(c_val) + ", t = "+ str(t_val) +") = " + str(tk[i , j]) + "; \n")
+                f.write("tk("+ str(c_val) + ", "+ str(t_val) +") = " + str(tk[i , j]) + "\n")
                 j += 1
             i += 1
         f.close()
@@ -120,8 +125,12 @@ class MainWindow(QMainWindow):
         c, t = np.meshgrid(c, t)
         # Plot the surface.
         surf = ax.plot_surface(c, t, tk, cmap=cm.coolwarm, linewidth=0, antialiased=False)
+        # Customize the z axis.
+        ax.set_zlim(tk.min(), tk.max())
+        ax.zaxis.set_major_locator(LinearLocator(10))
+        ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
         # Add a color bar which maps values to colors.
-        fig.colorbar(surf, shrink=0.5, aspect=5)
+        fig.colorbar(surf, shrink=1, aspect=5)
         plt.show()
 
         self.statusBar().showMessage('Approximation ploted')
