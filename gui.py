@@ -27,12 +27,17 @@ class MainWindow(QMainWindow):
         plot_btn = QPushButton('Plot', self)
         plot_btn.clicked.connect(self.plot_event)
 
+        self.c_min_edit = QLineEdit('0')
+        self.c_max_edit = QLineEdit('200')
+        self.t_min_edit = QLineEdit('0')
+        self.t_max_edit = QLineEdit('100')
+
         #add table widget
         self.tableResult = QTableWidget()
 
         #create layout for result table
         vboxTabelResult = QVBoxLayout()
-        vboxTabelResult.addWidget(QLabel('Result: '))
+        vboxTabelResult.addWidget(QLabel('Aij Coefficients: '))
         vboxTabelResult.addWidget(self.tableResult)
 
         #create horizontal layout for button and move it to right side
@@ -40,8 +45,26 @@ class MainWindow(QMainWindow):
         contolButtons.addStretch(1)
         contolButtons.addWidget(plot_btn)
 
+        #grid for labels
+        gridNet = QGridLayout()
+        gridNet.setSpacing(10)
+
+        gridNet.addWidget(QLabel('C Min ='), 1, 0)
+        gridNet.addWidget(self.c_min_edit, 1, 1)
+
+        gridNet.addWidget(QLabel('C Max = '), 1, 2)
+        gridNet.addWidget(self.c_max_edit, 1, 3)
+
+        gridNet.addWidget(QLabel('T Min = '), 2, 0)
+        gridNet.addWidget(self.t_min_edit, 2, 1)
+            
+        gridNet.addWidget(QLabel('T Max = '), 2, 2)
+        gridNet.addWidget(self.t_max_edit, 2, 3) 
+
         #join both layouts in one vertical
         vbox = QVBoxLayout()
+        vbox.addLayout(gridNet)
+        vbox.addWidget(QHLine())
 
         vbox.addLayout(vboxTabelResult)
         vbox.addLayout(contolButtons)
@@ -76,9 +99,9 @@ class MainWindow(QMainWindow):
         a_ij = inf.calculate_aj()
         self.show_aij(a_ij)
 
-        c = np.linspace(0, 200, 20)
-        t = np.linspace(0, 100, 20)
-        tk = np.zeros((20, 20), dtype=float)
+        c = np.linspace(float(self.c_min_edit.text()), float(self.c_max_edit.text()), 50)
+        t = np.linspace(float(self.t_min_edit.text()), float(self.t_max_edit.text()), 50)
+        tk = np.zeros((50, 50), dtype=float)
 
         f = open("approximation.txt", "w")
         i = 0
@@ -93,15 +116,12 @@ class MainWindow(QMainWindow):
 
         fig = plt.figure()
         ax = fig.gca(projection='3d')
-
         # Make data.
         c, t = np.meshgrid(c, t)
-
         # Plot the surface.
-        surf = ax.plot_surface(c, t, tk, cmap=cm.coolwarm,
-                               linewidth=0, antialiased=False)
-
+        surf = ax.plot_surface(c, t, tk, cmap=cm.coolwarm, linewidth=0, antialiased=False)
         # Add a color bar which maps values to colors.
         fig.colorbar(surf, shrink=0.5, aspect=5)
-
         plt.show()
+
+        self.statusBar().showMessage('Approximation ploted')
