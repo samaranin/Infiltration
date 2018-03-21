@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from PyQt5.QtWidgets import *
+import Infiltration as inf
 
 class QHLine(QFrame):
     def __init__(self):
@@ -23,6 +24,9 @@ class MainWindow(QMainWindow):
         calculate_btn = QPushButton('Calculate', self)
         calculate_btn.clicked.connect(self.calculate_event)
 
+        plot_btn = QPushButton('Plot', self)
+        plot_btn.clicked.connect(self.plot_event)
+
         #add table widget
         self.tableResult = QTableWidget()
 
@@ -35,6 +39,7 @@ class MainWindow(QMainWindow):
         contolButtons = QHBoxLayout()
         contolButtons.addStretch(1)
         contolButtons.addWidget(calculate_btn)
+        contolButtons.addWidget(plot_btn)
 
         #join both layouts in one vertical
         vbox = QVBoxLayout()
@@ -53,4 +58,20 @@ class MainWindow(QMainWindow):
         self.show()
 
     def calculate_event(self, button):
+        a_ij = inf.calculate_aj()
+        n = a_ij.shape[0]
+
+        self.tableResult.setRowCount(1)
+        self.tableResult.setColumnCount(n)
+        for i in range(n):
+            self.tableResult.setItem(0, i, QTableWidgetItem(str(a_ij[i])))
+
+        self.statusBar().showMessage('Coefficeints Calculated')
+
+        f = open("a_ij.txt", "w")
+        a_ij.shape = (9, 4)
+        f.write(str(a_ij))
+        f.close
+
+    def plot_event(self, button):
         pass
