@@ -80,7 +80,7 @@ class MainWindow(QMainWindow):
         #draw and show main window
         self.setCentralWidget(central_widget)
         self.setGeometry(150, 150, 550, 150)
-        self.setWindowTitle('Soil Moisture')
+        self.setWindowTitle('Filtration')
         self.show()
 
     def show_aij(self, a_ij):
