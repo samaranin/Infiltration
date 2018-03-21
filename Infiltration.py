@@ -17,4 +17,39 @@ def phi_ij(c_i, c_j, t_i, t_j):
     return np.sqrt(1 + (c_i - c_j)**2 + (t_i - t_j)**2)
 
 def calculate_aj():
-    pass
+    b_ij = np.zeros((36, 36), dtype=float)
+
+    i = j = 0
+    for c_j_val in c_i:
+        for t_j_val in t_i:
+            j = 0
+            for c_i_val in c_i:
+                for t_i_val in t_i:
+                    b_ij[i, j] = phi_ij(c_i_val, c_j_val, t_i_val, t_j_val)
+                    j += 1
+
+            i += 1
+
+    a_ij = np.linalg.solve(b_ij, k_i)
+    return a_ij
+
+def tk_ct(a_ij, c, t):
+    i = 0
+    function_value = 0
+    for c_j in c_i:
+        for t_j in t_i:
+            function_value += a_ij[i] * phi_ij(c, c_j, t, t_j)
+            i += 1
+            
+    return function_value
+
+def check():
+    a_ij = calculate_aj()
+    k_test = np.zeros((36), dtype=float)
+    i = 0
+    for c in c_i:
+        for t in t_i:
+            k_test[i] = tk_ct(a_ij, c, t)
+            i += 1
+
+    print(k_test)

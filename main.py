@@ -5,7 +5,7 @@ import Infiltration as inf
 
 
 if __name__ == "__main__":
-    print(inf.c_i)
+    inf.check()
 
     #show main window
     #app = QApplication(sys.argv)
