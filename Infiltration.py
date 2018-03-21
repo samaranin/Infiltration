@@ -19,7 +19,7 @@ def phi_ij(c_i, c_j, t_i, t_j):
 def calculate_aj():
     b_ij = np.zeros((36, 36), dtype=float)
 
-    i = j = 0
+    i = 0
     for c_j_val in c_i:
         for t_j_val in t_i:
             j = 0
