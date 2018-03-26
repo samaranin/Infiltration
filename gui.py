@@ -38,7 +38,7 @@ class MainWindow(QMainWindow):
 
         #create layout for result table
         vboxTabelResult = QVBoxLayout()
-        vboxTabelResult.addWidget(QLabel('Aij Coefficients: '))
+        vboxTabelResult.addWidget(QLabel('A_j Коефіцієнти: '))
         vboxTabelResult.addWidget(self.tableResult)
 
         #create horizontal layout for button and move it to right side
@@ -62,12 +62,15 @@ class MainWindow(QMainWindow):
         gridNet.addWidget(QLabel('T Max = '), 2, 2)
         gridNet.addWidget(self.t_max_edit, 2, 3) 
 
-        gridNet.addWidget(QLabel('Discretization Step = '), 3, 0)
-        gridNet.addWidget(self.step,3, 1) 
+        gridNetPoints = QGridLayout()
+        gridNetPoints.setSpacing(10)
+        gridNetPoints.addWidget(QLabel('Кількість вузлів на кожній осі = '), 3, 0)
+        gridNetPoints.addWidget(self.step,3, 1) 
 
         #join both layouts in one vertical
         vbox = QVBoxLayout()
         vbox.addLayout(gridNet)
+        vbox.addLayout(gridNetPoints)
         vbox.addWidget(QHLine())
 
         vbox.addLayout(vboxTabelResult)
@@ -91,7 +94,7 @@ class MainWindow(QMainWindow):
         for i in range(n):
             self.tableResult.setItem(0, i, QTableWidgetItem(str(a_ij[i])))
 
-        self.statusBar().showMessage('Coefficeints Calculated')
+        self.statusBar().showMessage('Коефіцієти пораховано')
 
         f = open("a_ij.txt", "w")
         a_ij.shape = (9, 4)
@@ -103,10 +106,10 @@ class MainWindow(QMainWindow):
         a_ij = inf.calculate_aj()
         self.show_aij(a_ij)
 
-        step = int(self.step.text())
-        c = np.linspace(float(self.c_min_edit.text()), float(self.c_max_edit.text()), step)
-        t = np.linspace(float(self.t_min_edit.text()), float(self.t_max_edit.text()), step)
-        tk = np.zeros((step, step), dtype=float)
+        number = int(self.step.text())
+        c = np.linspace(float(self.c_min_edit.text()), float(self.c_max_edit.text()), number)
+        t = np.linspace(float(self.t_min_edit.text()), float(self.t_max_edit.text()), number)
+        tk = np.zeros((number, number), dtype=float)
 
         f = open("approximation.txt", "w")
         i = 0
@@ -124,13 +127,16 @@ class MainWindow(QMainWindow):
         # Make data.
         c, t = np.meshgrid(c, t)
         # Plot the surface.
-        surf = ax.plot_surface(c, t, tk, cmap=cm.coolwarm, linewidth=0, antialiased=False)
+        surf = ax.plot_surface(c, t, tk, cmap=cm.gray, linewidth=0, antialiased=False)
         # Customize the z axis.
         ax.set_zlim(tk.min(), tk.max())
         ax.zaxis.set_major_locator(LinearLocator(10))
         ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
+        ax.set_xlabel('Концентрація')
+        ax.set_ylabel('Температура')
+        ax.set_zlabel('Коефіцієнт фільтарції')
         # Add a color bar which maps values to colors.
         fig.colorbar(surf, shrink=1, aspect=5)
         plt.show()
 
-        self.statusBar().showMessage('Approximation ploted')
+        self.statusBar().showMessage('Графік побудовано')
