@@ -38,7 +38,7 @@ class MainWindow(QMainWindow):
 
         #create layout for result table
         vboxTabelResult = QVBoxLayout()
-        vboxTabelResult.addWidget(QLabel('A_j Коефіцієнти: '))
+        vboxTabelResult.addWidget(QLabel('A_j Coefficients: '))
         vboxTabelResult.addWidget(self.tableResult)
 
         #create horizontal layout for button and move it to right side
@@ -64,7 +64,7 @@ class MainWindow(QMainWindow):
 
         gridNetPoints = QGridLayout()
         gridNetPoints.setSpacing(10)
-        gridNetPoints.addWidget(QLabel('Кількість вузлів на кожній осі = '), 3, 0)
+        gridNetPoints.addWidget(QLabel('Nodes per axis = '), 3, 0)
         gridNetPoints.addWidget(self.step,3, 1) 
 
         #join both layouts in one vertical
@@ -94,7 +94,7 @@ class MainWindow(QMainWindow):
         for i in range(n):
             self.tableResult.setItem(0, i, QTableWidgetItem(str(a_ij[i])))
 
-        self.statusBar().showMessage('Коефіцієти пораховано')
+        self.statusBar().showMessage('Coefficents calculated')
 
         f = open("a_ij.txt", "w")
         a_ij.shape = (9, 4)
@@ -132,11 +132,11 @@ class MainWindow(QMainWindow):
         ax.set_zlim(tk.min(), tk.max())
         ax.zaxis.set_major_locator(LinearLocator(10))
         ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
-        ax.set_xlabel('Концентрація')
-        ax.set_ylabel('Температура')
-        ax.set_zlabel('Коефіцієнт фільтарції')
+        ax.set_xlabel('Concentration of saline solution, g/l')
+        ax.set_ylabel('Temeperature, ℃')
+        ax.set_zlabel('Filtration coefficeint, m/day')
         # Add a color bar which maps values to colors.
         fig.colorbar(surf, shrink=1, aspect=5)
         plt.show()
 
-        self.statusBar().showMessage('Графік побудовано')
+        self.statusBar().showMessage('Plotted')
