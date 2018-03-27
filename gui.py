@@ -28,9 +28,9 @@ class MainWindow(QMainWindow):
         plot_btn.clicked.connect(self.plot_event)
 
         self.c_min_edit = QLineEdit('0')
-        self.c_max_edit = QLineEdit('200')
+        self.c_max_edit = QLineEdit('160')
         self.t_min_edit = QLineEdit('0')
-        self.t_max_edit = QLineEdit('100')
+        self.t_max_edit = QLineEdit('75')
         self.step = QLineEdit('50')
 
         #add table widget
@@ -111,25 +111,29 @@ class MainWindow(QMainWindow):
         t = np.linspace(float(self.t_min_edit.text()), float(self.t_max_edit.text()), number)
         tk = np.zeros((number, number), dtype=float)
 
-        f = open("approximation.txt", "w")
+        #f = open("approximation.txt", "w")
         i = 0
         for c_val in c:
             j = 0
             for t_val in t:
                 tk[i, j] = inf.tk_ct(a_ij, c_val, t_val)
-                f.write("tk("+ str(c_val) + ", "+ str(t_val) +") = " + str(tk[i , j]) + "\n")
+                #f.write("tk("+ str(c_val) + ", "+ str(t_val) +") = " + str(tk[i , j]) + "\n")
                 j += 1
             i += 1
-        f.close()
+        #f.close()
+        print(tk.max())
+
 
         fig = plt.figure()
         ax = fig.gca(projection='3d')
         # Make data.
         c, t = np.meshgrid(c, t)
         # Plot the surface.
-        surf = ax.plot_surface(c, t, tk, cmap=cm.gray, linewidth=0, antialiased=False)
-        # Customize the z axis.
+        surf = ax.plot_surface(c, t, tk.transpose(), cmap=cm.gray, linewidth=0, antialiased=False)
+        # Customize the axises
         ax.set_zlim(tk.min(), tk.max())
+        ax.set_xlim(c.min(), c.max())
+        ax.set_ylim(t.min(), t.max())
         ax.zaxis.set_major_locator(LinearLocator(10))
         ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
         ax.set_xlabel('Concentration of saline solution, g/l')
