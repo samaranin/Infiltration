@@ -121,8 +121,6 @@ class MainWindow(QMainWindow):
                 j += 1
             i += 1
         #f.close()
-        print(tk.max())
-
 
         fig = plt.figure()
         ax = fig.gca(projection='3d')
