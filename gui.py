@@ -29,7 +29,7 @@ class MainWindow(QMainWindow):
 
         self.c_min_edit = QLineEdit('0')
         self.c_max_edit = QLineEdit('160')
-        self.t_min_edit = QLineEdit('0')
+        self.t_min_edit = QLineEdit('16')
         self.t_max_edit = QLineEdit('75')
         self.step = QLineEdit('50')
 
